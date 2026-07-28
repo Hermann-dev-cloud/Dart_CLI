@@ -1,5 +1,5 @@
 import 'package:ansicolor/ansicolor.dart';
-import 'identify.dart'; // Assurez-vous que le nom du fichier respecte la casse (identify.dart)
+import '../data_access/identify.dart'; // Assurez-vous que le nom du fichier respecte la casse (identify.dart)
 
 enum Priority { low, medium, high }
 
@@ -98,7 +98,7 @@ class UrgentTask extends Task {
     final greenPen = AnsiPen()..green();
 
     final status = isDone ? greenPen('Status: Done') : grayPen('Status: Todo');
-    return '${redPen('[⚠️ URGENT ($internalCode)]')} $title | $status';
+    return '${redPen('[ URGENT ($internalCode)]')} $title | $status';
   }
 
   @override

@@ -1,12 +1,11 @@
 import 'dart:io';
 import 'package:uuid/uuid.dart';
 import 'package:ansicolor/ansicolor.dart';
-import 'package:dart_c_l_i/repository_exception.dart';
 
-// Importations calibrées avec le nom exact de ton package
-import 'package:dart_c_l_i/task.dart';
-import 'package:dart_c_l_i/repository.dart';
-import 'package:dart_c_l_i/file_storage.dart';
+import 'package:dart_c_l_i/models/task.dart';
+import 'package:dart_c_l_i/data_access/repository.dart';
+import 'package:dart_c_l_i/data_access/file_storage.dart';
+import 'package:dart_c_l_i/exceptions/exceptions.dart';
 
 void main() async {
   final taskRepo = Repository<Task>();
@@ -14,7 +13,6 @@ void main() async {
   const uuid = Uuid();
   ansiColorDisabled = false;
 
-  // Initialisation des stylos de couleur officiels
   final greenPen = AnsiPen()..green();
   final redPen = AnsiPen()..red();
   final yellowPen = AnsiPen()..yellow(bold: true);
@@ -50,6 +48,7 @@ void main() async {
     try {
       switch (choice) {
         case '1':
+        //  SÉCURISÉ : L'application attend l'écriture complète du fichier JSON
           await _addStandardTask(taskRepo, storage, uuid);
           break;
         case '2':
@@ -78,9 +77,10 @@ void main() async {
           print(redPen(' Invalid choice. Please enter a number between 1 and 8.'));
       }
     } on RepositoryException catch (e) {
-      print(redPen(' Application Error: ${e.message}'));
+      //  HARMONISÉ : Capture simultanément ItemNotFoundException et StorageException
+      print(redPen('️ Application Error: ${e.message}'));
     } catch (e) {
-      print(redPen(' Unexpected Error: $e'));
+      print(redPen(' Unexpected System Error: $e'));
     }
     print('');
   }
@@ -99,7 +99,7 @@ Future<void> _addStandardTask(Repository<Task> repo, FileStorage storage, Uuid u
   if (pChoice == '3') priority = Priority.high;
 
   final deadline = _askForDeadline();
-  final id = uuid.v4().substring(0, 8); // ID unique et propre généré par le package uuid
+  final id = uuid.v4().substring(0, 8);
 
   final task = StandardTask(id: id, title: title, priority: priority, deadline: deadline);
   repo.add(task);
@@ -154,7 +154,7 @@ Future<void> _markTaskAsDone(Repository<Task> repo, FileStorage storage) async {
 
   repo.markAsDone(id);
   await storage.saveTasks(repo.getAll());
-  print(' Task $id marked as done and updated in file.');
+  print('Task $id marked as done and updated in file.');
 }
 
 Future<void> _deleteTask(Repository<Task> repo, FileStorage storage) async {
