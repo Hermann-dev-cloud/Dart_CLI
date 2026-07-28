@@ -1,5 +1,4 @@
 name: dart_c_l_i
-
 on:
   push:
     branches: [ main ]
@@ -17,10 +16,15 @@ jobs:
         with:
           sdk: 'stable'
 
+      # 🚀 OBLIGATOIRE EN PREMIER : Crée le fichier de config dont le formateur a besoin
       - name: Install dependencies
         run: dart pub get
 
+      # 🛠️ EN DEUXIÈME : Le formateur fonctionnera désormais sans sauter de fichier
       - name: Verify code formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Verify code formatting formatting check
         run: dart format --output=none --set-exit-if-changed .
 
       - name: Analyze project source
