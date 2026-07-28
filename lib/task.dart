@@ -1,5 +1,5 @@
 import 'package:ansicolor/ansicolor.dart';
-import 'Identify.dart'; // Assurez-vous que le nom du fichier respecte la casse (Identify.dart)
+import 'identify.dart'; // Assurez-vous que le nom du fichier respecte la casse (identify.dart)
 
 enum Priority { low, medium, high }
 

@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
-import 'package:dart_c_l_i/Task.dart';
-import 'package:dart_c_l_i/Repository.dart';
-import 'package:dart_c_l_i/RepositoryException.dart';
+import 'package:dart_c_l_i/task.dart';
+import 'package:dart_c_l_i/repository.dart';
+import 'package:dart_c_l_i/repository_exception.dart';
 
 void main() {
   group('Task Models Tests', () {

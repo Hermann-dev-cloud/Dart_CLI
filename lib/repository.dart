@@ -1,6 +1,6 @@
-import 'Task.dart';
-import 'Identify.dart';
-import 'RepositoryException.dart';
+import 'task.dart';
+import 'identify.dart';
+import 'repository_exception.dart';
 
 class Repository<T extends Identify> {
   final List<T> _items = [];

@@ -1,13 +1,12 @@
 import 'dart:io';
 import 'package:uuid/uuid.dart';
 import 'package:ansicolor/ansicolor.dart';
-import 'package:dart_c_l_i/RepositoryException.dart';
+import 'package:dart_c_l_i/repository_exception.dart';
 
 // Importations calibrées avec le nom exact de ton package
-import 'package:dart_c_l_i/Task.dart';
-import 'package:dart_c_l_i/Repository.dart';
-import 'package:dart_c_l_i/FileStorage.dart';
-import 'package:dart_c_l_i/exceptions.dart' ;
+import 'package:dart_c_l_i/task.dart';
+import 'package:dart_c_l_i/repository.dart';
+import 'package:dart_c_l_i/file_storage.dart';
 
 void main() async {
   final taskRepo = Repository<Task>();
