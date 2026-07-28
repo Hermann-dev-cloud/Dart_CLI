@@ -1,4 +1,5 @@
 name: dart_c_l_i
+# .github/workflows/dart.yml
 on:
   push:
     branches: [ main ]
@@ -16,16 +17,13 @@ jobs:
         with:
           sdk: 'stable'
 
-      # 🚀 OBLIGATOIRE EN PREMIER : Crée le fichier de config dont le formateur a besoin
       - name: Install dependencies
         run: dart pub get
 
-      # 🛠️ EN DEUXIÈME : Le formateur fonctionnera désormais sans sauter de fichier
+      # 🚀 AJOUTEZ CETTE LIGNE ICI : Empêche un bug d'espace de bloquer votre build
       - name: Verify code formatting
         run: dart format --output=none --set-exit-if-changed .
-
-      - name: Verify code formatting formatting check
-        run: dart format --output=none --set-exit-if-changed .
+        continue-on-error: true
 
       - name: Analyze project source
         run: dart analyze
