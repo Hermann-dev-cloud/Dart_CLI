@@ -1,4 +1,4 @@
-name: Dart CI
+name: dart_c_l_i
 
 on:
   push:
