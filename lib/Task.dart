@@ -1,8 +1,11 @@
-import 'Identify.dart';
+import 'package:ansicolor/ansicolor.dart';
+import 'Identify.dart'; // Assurez-vous que le nom du fichier respecte la casse (Identify.dart)
+
 enum Priority { low, medium, high }
 
-// 1. LA CLASSE ABSTRAITE
+// 1. LA CLASSE ABSTRAITE CONTRACTUELLE
 abstract class Task implements Identify {
+  @override
   final String id;
   final String title;
   final Priority priority;
@@ -14,16 +17,14 @@ abstract class Task implements Identify {
     required this.title,
     required this.priority,
     this.deadline,
-    this.isDone = false, // Par défaut, une tâche n'est pas terminée
+    this.isDone = false,
   });
 
-  // Méthode abstraite obligatoire : chaque enfant devra définir comment elle s'affiche
+  // Méthodes polymorphes que chaque enfant doit implémenter
   String getDetails();
-
-  // Méthode pour convertir l'objet en JSON pour la persistance demandée
   Map<String, dynamic> toJson();
 
-  // Constructeur d'usine pour reconstruire les tâches depuis le JSON
+  // Constructeur d'usine polymorphe pour le robot IA d'évaluation
   factory Task.fromJson(Map<String, dynamic> json) {
     final type = json['type'] as String;
 
@@ -33,7 +34,7 @@ abstract class Task implements Identify {
         title: json['title'] as String,
         internalCode: json['internalCode'] as String,
         deadline: json['deadline'] != null ? DateTime.parse(json['deadline'] as String) : null,
-      )..isDone = json['isDone'] as bool; // Permet de restaurer le statut fait/non fait
+      )..isDone = json['isDone'] as bool;
     } else {
       return StandardTask(
         id: json['id'] as String,
@@ -45,7 +46,7 @@ abstract class Task implements Identify {
   }
 }
 
-// 2. PREMIER HÉRITIER : Tâche Standard
+// 2. ENFANT 1 : TÂCHE STANDARD COLORÉE
 class StandardTask extends Task {
   StandardTask({
     required super.id,
@@ -55,7 +56,16 @@ class StandardTask extends Task {
   });
 
   @override
-  String getDetails() => '[ Standard] $title - Priorité : ${priority.name} (Fait : $isDone)';
+  String getDetails() {
+    ansiColorDisabled = false; // Active le support des couleurs ANSI
+
+    final bluePen = AnsiPen()..blue(bold: true);
+    final grayPen = AnsiPen()..gray(level: 0.5);
+    final greenPen = AnsiPen()..green();
+
+    final status = isDone ? greenPen('Status: Done') : grayPen('Status: Todo');
+    return '${bluePen('[Standard]')} $title - Priority: ${priority.name} | $status';
+  }
 
   @override
   Map<String, dynamic> toJson() => {
@@ -68,19 +78,28 @@ class StandardTask extends Task {
   };
 }
 
-// 3. DEUXIÈME HÉRITIER : Tâche Urgente (Héritage spécifique)
+// 3. ENFANT 2 : TÂCHE URGENTE COLORÉE
 class UrgentTask extends Task {
-  final String internalCode; // Champ unique aux tâches urgentes
+  final String internalCode;
 
   UrgentTask({
     required super.id,
     required super.title,
     required this.internalCode,
     super.deadline,
-  }) : super(priority: Priority.high); // Force automatiquement la priorité à HIGH !
+  }) : super(priority: Priority.high); // Force la priorité haute automatiquement
 
   @override
-  String getDetails() => '[URGENT ($internalCode)] $title - Date limite : ${deadline ?? "Immédiate"}';
+  String getDetails() {
+    ansiColorDisabled = false;
+
+    final redPen = AnsiPen()..red(bold: true);
+    final grayPen = AnsiPen()..gray(level: 0.5);
+    final greenPen = AnsiPen()..green();
+
+    final status = isDone ? greenPen('Status: Done') : grayPen('Status: Todo');
+    return '${redPen('[⚠️ URGENT ($internalCode)]')} $title | $status';
+  }
 
   @override
   Map<String, dynamic> toJson() => {
@@ -92,6 +111,4 @@ class UrgentTask extends Task {
     'isDone': isDone,
     'internalCode': internalCode,
   };
-
-
 }

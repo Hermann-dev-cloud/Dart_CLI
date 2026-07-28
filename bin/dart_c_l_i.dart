@@ -1,38 +1,49 @@
 import 'dart:io';
-import 'package:dart_c_l_i/Repository.dart';
+import 'package:uuid/uuid.dart';
+import 'package:ansicolor/ansicolor.dart';
 import 'package:dart_c_l_i/RepositoryException.dart';
+
+// Importations calibrées avec le nom exact de ton package
 import 'package:dart_c_l_i/Task.dart';
+import 'package:dart_c_l_i/Repository.dart';
 import 'package:dart_c_l_i/FileStorage.dart';
+import 'package:dart_c_l_i/exceptions.dart' ;
 
 void main() async {
   final taskRepo = Repository<Task>();
   final storage = FileStorage('tasks.json');
+  const uuid = Uuid();
+  ansiColorDisabled = false;
 
-  // 1. Initialisation et chargement des données existantes
-  print('=== Loading tasks from local database ===');
+  // Initialisation des stylos de couleur officiels
+  final greenPen = AnsiPen()..green();
+  final redPen = AnsiPen()..red();
+  final yellowPen = AnsiPen()..yellow(bold: true);
+
+  print(yellowPen('=== Loading tasks from local database ==='));
   try {
     final savedTasks = await storage.loadTasks();
     for (var task in savedTasks) {
       taskRepo.add(task);
     }
-    print('${savedTasks.length} tasks loaded successfully!\n');
+    print(greenPen(' ${savedTasks.length} tasks loaded successfully!\n'));
   } catch (e) {
-    print(' Warning during load: $e\n');
+    print(redPen(' Warning during load: $e\n'));
   }
 
-  // 2. Boucle principale de l'application CLI
   bool isRunning = true;
   while (isRunning) {
-    print('================ Task Manager CLI ================');
+    print('================ ${yellowPen('Task Manager CLI Pro')} ================');
     print('1. Add a standard task');
     print('2. Add an urgent task');
     print('3. List all tasks (sorted by Priority)');
     print('4. List all tasks (sorted by Deadline/Date)');
-    print('5. Mark a task as done');
-    print('6. Delete a task');
-    print('7. Exit');
+    print('5. List ONLY pending tasks (Todo)');
+    print('6. Mark a task as done');
+    print('7. Delete a task');
+    print('8. Exit');
     print('==================================================');
-    stdout.write('Choose an option (1-7): ');
+    stdout.write('Choose an option (1-8): ');
 
     final choice = stdin.readLineSync()?.trim();
     print('');
@@ -40,10 +51,10 @@ void main() async {
     try {
       switch (choice) {
         case '1':
-          _addStandardTask(taskRepo, storage);
+          await _addStandardTask(taskRepo, storage, uuid);
           break;
         case '2':
-          _addUrgentTask(taskRepo, storage);
+          await _addUrgentTask(taskRepo, storage, uuid);
           break;
         case '3':
           _listTasks(taskRepo.getAllSortedByPriority());
@@ -52,30 +63,31 @@ void main() async {
           _listTasks(taskRepo.getAllSortedByDate());
           break;
         case '5':
-          await _markTaskAsDone(taskRepo, storage);
+          _listTasks(taskRepo.getFilteredTasks(pendingOnly: true));
           break;
         case '6':
-          await _deleteTask(taskRepo, storage);
+          await _markTaskAsDone(taskRepo, storage);
           break;
         case '7':
+          await _deleteTask(taskRepo, storage);
+          break;
+        case '8':
           isRunning = false;
-          print('Goodbye! Thank you for using Task Manager CLI.');
+          print(greenPen('Goodbye! Thank you for using Task Manager CLI Pro.'));
           break;
         default:
-          print(' Invalid choice. Please enter a number between 1 and 7.');
+          print(redPen(' Invalid choice. Please enter a number between 1 and 8.'));
       }
     } on RepositoryException catch (e) {
-      print(' Application Error: ${e.message}');
+      print(redPen(' Application Error: ${e.message}'));
     } catch (e) {
-      print(' Unexpected Error: $e');
+      print(redPen(' Unexpected Error: $e'));
     }
-    print(''); // Saut de ligne final avant le prochain tour de boucle
+    print('');
   }
 }
 
-// --- FONCTIONS UTILITAIRES POUR CHAQUE ACTION ---
-
-void _addStandardTask(Repository<Task> repo, FileStorage storage) async {
+Future<void> _addStandardTask(Repository<Task> repo, FileStorage storage, Uuid uuid) async {
   stdout.write('Enter task title: ');
   final title = stdin.readLineSync()?.trim() ?? '';
   if (title.isEmpty) return print(' Title cannot be empty.');
@@ -88,7 +100,7 @@ void _addStandardTask(Repository<Task> repo, FileStorage storage) async {
   if (pChoice == '3') priority = Priority.high;
 
   final deadline = _askForDeadline();
-  final id = DateTime.now().millisecondsSinceEpoch.toString();
+  final id = uuid.v4().substring(0, 8); // ID unique et propre généré par le package uuid
 
   final task = StandardTask(id: id, title: title, priority: priority, deadline: deadline);
   repo.add(task);
@@ -96,7 +108,7 @@ void _addStandardTask(Repository<Task> repo, FileStorage storage) async {
   print(' Standard task added and saved successfully!');
 }
 
-void _addUrgentTask(Repository<Task> repo, FileStorage storage) async {
+Future<void> _addUrgentTask(Repository<Task> repo, FileStorage storage, Uuid uuid) async {
   stdout.write('Enter urgent task title: ');
   final title = stdin.readLineSync()?.trim() ?? '';
   if (title.isEmpty) return print(' Title cannot be empty.');
@@ -105,7 +117,7 @@ void _addUrgentTask(Repository<Task> repo, FileStorage storage) async {
   final code = stdin.readLineSync()?.trim() ?? 'URGENT';
 
   final deadline = _askForDeadline();
-  final id = DateTime.now().millisecondsSinceEpoch.toString();
+  final id = uuid.v4().substring(0, 8);
 
   final task = UrgentTask(id: id, title: title, internalCode: code, deadline: deadline);
   repo.add(task);
@@ -141,7 +153,7 @@ Future<void> _markTaskAsDone(Repository<Task> repo, FileStorage storage) async {
   stdout.write('Enter the ID of the task to mark as done: ');
   final id = stdin.readLineSync()?.trim() ?? '';
 
-  repo.markAsDone(id); // Lève une exception si l'ID n'existe pas
+  repo.markAsDone(id);
   await storage.saveTasks(repo.getAll());
   print(' Task $id marked as done and updated in file.');
 }
@@ -150,7 +162,7 @@ Future<void> _deleteTask(Repository<Task> repo, FileStorage storage) async {
   stdout.write('Enter the ID of the task to delete: ');
   final id = stdin.readLineSync()?.trim() ?? '';
 
-  repo.delete(id); // Lève une exception si l'ID n'existe pas
+  repo.delete(id);
   await storage.saveTasks(repo.getAll());
   print(' Task $id successfully deleted.');
 }

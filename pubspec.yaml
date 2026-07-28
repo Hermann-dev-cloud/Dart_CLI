@@ -1,14 +1,17 @@
 name: dart_c_l_i
-description: A sample command-line application with basic argument parsing.
-version: 0.0.1
+description: A production-ready command-line task management application built in pure Dart.
+version: 1.0.0
 
+# Spécification de la version du SDK Dart
 environment:
   sdk: ^3.12.2
 
+# Dépendances nécessaires pour la version Pro de votre application
 dependencies:
-  args: ^2.7.0
+  ansicolor: ^2.0.3
+  uuid: ^4.3.3
 
+# Outils de développement et de test requis pour la validation automatique
 dev_dependencies:
-  lints: ^6.0.0
+  lints: ^3.0.0
   test: ^1.25.6
-

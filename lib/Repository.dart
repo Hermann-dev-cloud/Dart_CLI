@@ -49,6 +49,16 @@ extension TaskRepositoryExtension on Repository<Task> {
     }
   }
 
+  List<Task> getFilteredTasks({required bool pendingOnly}) {
+    if (pendingOnly) {
+      // Retourne uniquement les tâches où isDone est false
+      return _items.where((task) => !task.isDone).toList();
+    } else {
+      // Retourne uniquement les tâches où isDone est true
+      return _items.where((task) => task.isDone).toList();
+    }
+  }
+
   // 4. LISTER ET TRIER PAR DATE (Les deadlines nulles vont à la fin)
   List<Task> getAllSortedByDate() {
     final tasks = getAll();
