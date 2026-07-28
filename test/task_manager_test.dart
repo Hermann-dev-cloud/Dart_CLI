@@ -20,8 +20,16 @@ void main() {
     });
 
     test('getAllSortedByPriority must sort correctly', () {
-      final lowTask = StandardTask(id: 'low', title: 'Low', priority: Priority.low);
-      final highTask = UrgentTask(id: 'high', title: 'High', internalCode: '01');
+      final lowTask = StandardTask(
+        id: 'low',
+        title: 'Low',
+        priority: Priority.low,
+      );
+      final highTask = UrgentTask(
+        id: 'high',
+        title: 'High',
+        internalCode: '01',
+      );
       repo.add(lowTask);
       repo.add(highTask);
 
@@ -32,7 +40,7 @@ void main() {
     // NOUVEAU TEST : Vérifie la levée de l'exception personnalisée de recherche
     test('getById must throw ItemNotFoundException when ID is missing', () {
       expect(
-            () => repo.getById('non_existent_id'),
+        () => repo.getById('non_existent_id'),
         throwsA(isA<ItemNotFoundException>()),
       );
     });
@@ -40,18 +48,21 @@ void main() {
     // ✅ NOUVEAU TEST : Vérifie la levée de l'exception personnalisée de suppression
     test('Deleting a non-existent task must throw ItemNotFoundException', () {
       expect(
-            () => repo.delete('invalid_id'),
+        () => repo.delete('invalid_id'),
         throwsA(isA<ItemNotFoundException>()),
       );
     });
 
     //  NOUVEAU TEST : Vérifie la levée de l'exception personnalisée de stockage (dossier inaccessible)
-    test('FileStorage must throw StorageException under invalid pathways', () async {
-      final invalidStorage = FileStorage('///////tasks.json');
-      expect(
-            () => invalidStorage.saveTasks([]),
-        throwsA(isA<StorageException>()),
-      );
-    });
+    test(
+      'FileStorage must throw StorageException under invalid pathways',
+      () async {
+        final invalidStorage = FileStorage('///////tasks.json');
+        expect(
+          () => invalidStorage.saveTasks([]),
+          throwsA(isA<StorageException>()),
+        );
+      },
+    );
   });
 }

@@ -30,7 +30,9 @@ void main() async {
 
   bool isRunning = true;
   while (isRunning) {
-    print('================ ${yellowPen('Task Manager CLI Pro')} ================');
+    print(
+      '================ ${yellowPen('Task Manager CLI Pro')} ================',
+    );
     print('1. Add a standard task');
     print('2. Add an urgent task');
     print('3. List all tasks (sorted by Priority)');
@@ -48,7 +50,7 @@ void main() async {
     try {
       switch (choice) {
         case '1':
-        //  SÉCURISÉ : L'application attend l'écriture complète du fichier JSON
+          //  SÉCURISÉ : L'application attend l'écriture complète du fichier JSON
           await _addStandardTask(taskRepo, storage, uuid);
           break;
         case '2':
@@ -74,7 +76,9 @@ void main() async {
           print(greenPen('Goodbye! Thank you for using Task Manager CLI Pro.'));
           break;
         default:
-          print(redPen(' Invalid choice. Please enter a number between 1 and 8.'));
+          print(
+            redPen(' Invalid choice. Please enter a number between 1 and 8.'),
+          );
       }
     } on RepositoryException catch (e) {
       //  HARMONISÉ : Capture simultanément ItemNotFoundException et StorageException
@@ -86,7 +90,11 @@ void main() async {
   }
 }
 
-Future<void> _addStandardTask(Repository<Task> repo, FileStorage storage, Uuid uuid) async {
+Future<void> _addStandardTask(
+  Repository<Task> repo,
+  FileStorage storage,
+  Uuid uuid,
+) async {
   stdout.write('Enter task title: ');
   final title = stdin.readLineSync()?.trim() ?? '';
   if (title.isEmpty) return print(' Title cannot be empty.');
@@ -101,13 +109,22 @@ Future<void> _addStandardTask(Repository<Task> repo, FileStorage storage, Uuid u
   final deadline = _askForDeadline();
   final id = uuid.v4().substring(0, 8);
 
-  final task = StandardTask(id: id, title: title, priority: priority, deadline: deadline);
+  final task = StandardTask(
+    id: id,
+    title: title,
+    priority: priority,
+    deadline: deadline,
+  );
   repo.add(task);
   await storage.saveTasks(repo.getAll());
   print(' Standard task added and saved successfully!');
 }
 
-Future<void> _addUrgentTask(Repository<Task> repo, FileStorage storage, Uuid uuid) async {
+Future<void> _addUrgentTask(
+  Repository<Task> repo,
+  FileStorage storage,
+  Uuid uuid,
+) async {
   stdout.write('Enter urgent task title: ');
   final title = stdin.readLineSync()?.trim() ?? '';
   if (title.isEmpty) return print(' Title cannot be empty.');
@@ -118,10 +135,17 @@ Future<void> _addUrgentTask(Repository<Task> repo, FileStorage storage, Uuid uui
   final deadline = _askForDeadline();
   final id = uuid.v4().substring(0, 8);
 
-  final task = UrgentTask(id: id, title: title, internalCode: code, deadline: deadline);
+  final task = UrgentTask(
+    id: id,
+    title: title,
+    internalCode: code,
+    deadline: deadline,
+  );
   repo.add(task);
   await storage.saveTasks(repo.getAll());
-  print(' Urgent task added and saved successfully (Priority auto-set to HIGH)!');
+  print(
+    ' Urgent task added and saved successfully (Priority auto-set to HIGH)!',
+  );
 }
 
 DateTime? _askForDeadline() {

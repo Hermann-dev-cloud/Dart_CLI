@@ -10,5 +10,6 @@ class ItemNotFoundException extends RepositoryException {
 }
 
 class StorageException extends RepositoryException {
-  StorageException(String details) : super("Storage operation failed: $details");
+  StorageException(String details)
+    : super("Storage operation failed: $details");
 }

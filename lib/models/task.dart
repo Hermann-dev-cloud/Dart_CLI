@@ -33,14 +33,18 @@ abstract class Task implements Identify {
         id: json['id'] as String,
         title: json['title'] as String,
         internalCode: json['internalCode'] as String,
-        deadline: json['deadline'] != null ? DateTime.parse(json['deadline'] as String) : null,
+        deadline: json['deadline'] != null
+            ? DateTime.parse(json['deadline'] as String)
+            : null,
       )..isDone = json['isDone'] as bool;
     } else {
       return StandardTask(
         id: json['id'] as String,
         title: json['title'] as String,
         priority: Priority.values.firstWhere((e) => e.name == json['priority']),
-        deadline: json['deadline'] != null ? DateTime.parse(json['deadline'] as String) : null,
+        deadline: json['deadline'] != null
+            ? DateTime.parse(json['deadline'] as String)
+            : null,
       )..isDone = json['isDone'] as bool;
     }
   }
@@ -87,7 +91,9 @@ class UrgentTask extends Task {
     required super.title,
     required this.internalCode,
     super.deadline,
-  }) : super(priority: Priority.high); // Force la priorité haute automatiquement
+  }) : super(
+         priority: Priority.high,
+       ); // Force la priorité haute automatiquement
 
   @override
   String getDetails() {

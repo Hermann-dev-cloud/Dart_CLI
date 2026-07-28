@@ -36,7 +36,9 @@ extension TaskRepositoryExtension on Repository<Task> {
   }
 
   List<Task> getFilteredTasks({required bool pendingOnly}) {
-    return _items.where((task) => pendingOnly ? !task.isDone : task.isDone).toList();
+    return _items
+        .where((task) => pendingOnly ? !task.isDone : task.isDone)
+        .toList();
   }
 
   List<Task> getAllSortedByDate() {
