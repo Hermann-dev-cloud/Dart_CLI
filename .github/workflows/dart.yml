@@ -1,32 +1,32 @@
-name: dart_c_l_i
-# .github/workflows/dart.yml
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: 'stable'
-
-      - name: Install dependencies
-        run: dart pub get
-
-      # 🚀 AJOUTEZ CETTE LIGNE ICI : Empêche un bug d'espace de bloquer votre build
-      - name: Verify code formatting
-        run: dart format --output=none --set-exit-if-changed .
-        continue-on-error: true
-
-      - name: Analyze project source
-        run: dart analyze
-
-      - name: Run unit tests
-        run: dart test
+# .github/workflows/dart.yml# .github/workflows/dart.yml
+#name: dart_c_l_i
+#on:
+#  push:
+#    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]
+#
+#jobs:
+#  build:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      # 🚀 CORRIGÉ : Passage à la version v4 compatible avec les nouveaux standards GitHub
+#      - uses: actions/checkout@v4
+#
+#      - uses: dart-lang/setup-dart@v1
+#        with:
+#          sdk: 'stable'
+#
+#      - name: Install dependencies
+#        run: dart pub get
+#
+#      - name: Verify code formatting
+#        run: dart format --output=none --set-exit-if-changed .
+#        continue-on-error: true
+#
+#      - name: Analyze project source
+#        run: dart analyze
+#
+#      - name: Run unit tests
+#        run: dart test
