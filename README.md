@@ -1,4 +1,4 @@
-# Dart_CLI — Task Manager 
+# Dart_CLI — Task Manager Pro
 
 A pure Dart command-line application built to demonstrate advanced object-oriented programming, generic structures, and asynchronous data persistence.
 
@@ -43,13 +43,16 @@ dart test
 
 ```text
 lib/
-├── identify.dart             # Abstract interface contract
-├── task.dart                 # Core models & JSON transformation factories
-├── repository.dart           # Generic database engine & filtering/sorting extensions
-├── file_storage.dart         # Asynchronous JSON file manager
-└── repository_exception.dart # Business domain error handling definitions
+├── models/
+│   └── task.dart          # Core models & JSON transformation factories
+├── data_access/
+│   ├── identify.dart      # Abstract interface contract
+│   ├── repository.dart    # Generic database engine & filtering/sorting extensions
+│   └── file_storage.dart  # Asynchronous JSON file manager
+└── exceptions/
+    └── exceptions.dart    # Unified hierarchical error handling definitions
 bin/
-└── dart_c_l_i.dart           # Main interactive CLI terminal entry point
+└── dart_c_l_i.dart        # Main interactive CLI terminal entry point
 test/
-└── task_manager_test.dart    # 5 mandatory algorithmic unit tests
+└── task_manager_test.dart # 5 mandatory algorithmic unit tests & exception validation
 ```
