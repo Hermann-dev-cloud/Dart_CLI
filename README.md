@@ -1,4 +1,4 @@
-# Dart_CLI — Task Manager Pro
+# Dart_CLI — Task Manager
 
 A pure Dart command-line application built to demonstrate advanced object-oriented programming, generic structures, and asynchronous data persistence.
 
