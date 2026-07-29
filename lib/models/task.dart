@@ -66,8 +66,8 @@ class StandardTask extends Task {
     final bluePen = AnsiPen()..blue(bold: true);
     final grayPen = AnsiPen()..gray(level: 0.5);
     final greenPen = AnsiPen()..green();
-
     final status = isDone ? greenPen('Status: Done') : grayPen('Status: Todo');
+
     return '${bluePen('[Standard]')} $title - Priority: ${priority.name} | $status';
   }
 

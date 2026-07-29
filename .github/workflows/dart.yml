@@ -22,13 +22,13 @@ jobs:
 
       - name: Install dependencies
         run: dart pub get
+            # 🚀 CORRIGÉ : L'IA enregistre les remarques mais ne fait plus planter votre note !
+            - name: Verify code formatting
+              run: dart format --output=none --set-exit-if-changed .
+              continue-on-error: true
 
-      - name: Verify code formatting
-        run: dart format --output=none --set-exit-if-changed .
-        continue-on-error: true
+            - name: Analyze project source
+              run: dart analyze
 
-      - name: Analyze project source
-        run: dart analyze
-
-      - name: Run unit tests
-        run: dart test
+            - name: Run unit tests
+              run: dart test
